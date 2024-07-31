@@ -29,7 +29,7 @@ in {
 
 		users.users = lib.lists.foldl (a: b: a // b) {} (
 			lib.lists.forEach usersList (user: { user = {
-				home = "/users/${user}";
+				home = ("/users/" + user);
 				createHome = false;
 				isNormalUser = true;
 				extraGroups = lib.lists.filter (e: ! (e == "" || e == [])) (lib.strings.split "\n" (builtins.readFile "${config.users.source}/${user}/groups"));
