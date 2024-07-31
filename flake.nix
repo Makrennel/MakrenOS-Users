@@ -7,13 +7,8 @@
 		home-manager.inputs.nixpkgs.follows = "nixpkgs";
 	};
 
-	outputs = { self, nixpkgs, ... }: {
-		nixosModules.default = {
-			imports = [
-				./users.nix { inherit inputs; }
-				./env.nix
-			];
-		};
+	outputs = inputs@ { self, nixpkgs, ... }: {
+		nixosModules.default = import ./module.nix inputs;
 	};
 }
 

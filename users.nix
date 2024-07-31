@@ -1,5 +1,5 @@
-{ lib, ... }: let
-	usersFile = pkgs.runCommand "get-declared-users" {} "ls -1 ${users.source} > $out";
+{ config, lib, pkgs, ... }: let
+	usersFile = pkgs.runCommand "get-declared-users" {} "ls -1 ${config.users.source} > $out";
 	usersList = lib.lists.filter (e: ! (e == "" || e == [])) (lib.strings.split "\n" (builtins.readFile usersFile));
 	skeleton = pkgs.runCommand "user-skeleton" {} ''
 		mkdir -p $out/{Desktop,Documents,Downloads,Local,Music,Images,Repositories,Shared,Templates,Videos} &&
@@ -23,28 +23,27 @@ in {
 		type = lib.types.str;
 	};
 
-	security.pam.makeHomeDir = true;
-	security.pam.makeHomeDir.skelDirectory = skeleton;
+	config = {
+		security.pam.services.login.makeHomeDir = true;
+		security.pam.makeHomeDir.skelDirectory = "${skeleton}";
 
-	users.users = foldl (a: b: a // b) {} {
-		lib.lists.forEach usersList (user: lib.nameValuePair user {
-			home = "/users/${user}";
-			createHome = false;
-			isNormalUser = true;
-			extraGroups = lib.lists.filter (e: ! (e == "")) (lib.strings.split "\n" (builtins.readFile "${users.source}/${user}/groups"));
-			hashedPassword = lib.removeSuffix "\n" (builtins.readFile "${users.source}/${user}/password");
-		});
-	};
-
-	home-manager.users = foldl (a: b: a // b) {} {
-		lib.lists.forEach usersList (user: lib.nameValuePair user {
-			home.username = user;
-			home.homeDirectory = lib.mkForce "/users/${user}/Local"; # Home Manager should only manage settings
+		users.users = lib.lists.foldl (a: b: a // b) {} (
+			lib.lists.forEach usersList (user: { user = {
+				home = "/users/${user}";
+				createHome = false;
+				isNormalUser = true;
+				extraGroups = lib.lists.filter (e: ! (e == "" || e == [])) (lib.strings.split "\n" (builtins.readFile "${config.users.source}/${user}/groups"));
+				hashedPassword = lib.removeSuffix "\n" (builtins.readFile "${config.users.source}/${user}/password");
+			};})
+		);
+		
+		home-manager.sharedModules = [({ config, lib, ... }: {
+			home.homeDirectory = lib.mkForce "/users/${config.home.username}/Local";
 
 			imports = [
-				${users.source}/${user}/home
+				(config.users.source + "/" + config.home.username + "/home")
 			];
-		});
+		})];
 	};
 }
 

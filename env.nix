@@ -156,7 +156,7 @@
 		TEXMACS_HOME_PATH="${XDG_DATA_HOME}/texmacs";
 		UNISON="${XDG_DATA_HOME}/unison";
 		VAGRANT_HOME="${XDG_DATA_HOME}/vagrant";
-		VAGRANT_ALIAS_FILE="${XDG_DATA_HOME}/vagrant/aliases";\
+		VAGRANT_ALIAS_FILE="${XDG_DATA_HOME}/vagrant/aliases";
 		VSCODE_PORTABLE="${XDG_DATA_HOME}/vscode";
 		WAKATIME_HOME="${XDG_DATA_HOME}/wakatime";
 		WINEPREFIX="${XDG_DATA_HOME}/wineprefixes/default";
@@ -181,7 +181,7 @@
 		GPODDER_DOWNLOAD_DIR="${XDG_DOWNLOAD_DIR}/gpodder";
 		JUPYTER_PLATFORM_DIRS="1";
 		MIX_XDG="true"; # Elixir
-		RXVT_SOCKET="${XDG_RUNTIME_DIR}/urxvtd";
+#		RXVT_SOCKET="${XDG_RUNTIME_DIR}/urxvtd";
 		STACK_XDG="1"; # Haskell Stack
 #		XAUTHORITY="${XDG_RUNTIME_DIR}/Xauthority"; # Breaks LightDM
 
