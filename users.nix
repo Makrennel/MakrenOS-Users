@@ -38,7 +38,7 @@ in {
 		);
 		
 		home-manager.users = lib.lists.foldl (a: b: a // b) {} (
-			lib.lists.forEach usersList (user: { "${user}" = { config, lib, ... }: {
+			lib.lists.forEach usersList (user: { "${user}" = {
 				home.homeDirectory = lib.mkForce "/users/${config.home.username}/Local";
 
 				imports = [
